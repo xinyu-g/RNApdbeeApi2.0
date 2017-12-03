@@ -4,6 +4,6 @@ NAME = "basePairAnalyzer"
 
 
 class Pair(Enum):
-    RNA_VIEW = "RNAVIEW"
-    MC = "MCANNOTATE"
-    DNA_DSSR = "DSSR"
+    RNAVIEW = "RNA_VIEW"
+    MCANNOTATE = "MC"
+    DSSR = "DNA_DSSR"

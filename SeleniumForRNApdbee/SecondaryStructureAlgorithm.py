@@ -4,8 +4,8 @@ NAME = "pseudoknotFinder"
 
 
 class Algorithm(Enum):
-    HYBRID = "COMPLEX_HYBRID"
-    DP = "DP_ONE"
-    MIN_GAIN = "EG"
-    MAX_CONFLICTS = "EC"
-    FCFS = "BASIC_5P"
+    COMPLEX_HYBRID ="HYBRID"
+    DP_ONE = "DP"
+    EG = "MIN_GAIN"
+    EC = "MAX_CONFLICTS"
+    BASIC_5P = "FCFS"

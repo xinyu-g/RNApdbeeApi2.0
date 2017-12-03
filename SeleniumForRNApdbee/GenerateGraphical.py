@@ -4,6 +4,6 @@ NAME = "secondaryStructureDrawer"
 
 
 class Graphical(Enum):
-    PSEUDO_VIEWER = "PSEUDOVIEWER"
+    PSEUDOVIEWER = "PSEUDO_VIEWER"
     VARNA = "VARNA"
-    NO_IMAGE = "NONE"
+    NONE = "NO_IMAGE"

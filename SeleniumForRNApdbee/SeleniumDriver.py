@@ -4,6 +4,8 @@ from SeleniumForRNApdbee import GenerateGraphical as Graphical
 from SeleniumForRNApdbee import BasePair
 from SeleniumForRNApdbee import NonCanonical
 from SeleniumForRNApdbee import FileLoader
+import time
+from selenium.common.exceptions import TimeoutException
 
 
 class Driver:
@@ -21,9 +23,6 @@ class Driver:
     def close(self):
         self.driver.close()
 
-    def click_radio(self, table, name, algorithm):
-        self.driver.find_element_by_xpath(self.SELECT_RADIO.format(table, name, algorithm.name)).click()
-
     @staticmethod
     def valid_type(algorithm_type):
         if algorithm_type == "3D":
@@ -33,6 +32,9 @@ class Driver:
         else:
             raise ValueError('Wrong type! Support type: 2D and 3D')
         return table
+
+    def click_radio(self, table, name, algorithm):
+        self.driver.find_element_by_xpath(self.SELECT_RADIO.format(table, name, algorithm.name)).click()
 
     def select_algorithm_type(self, algorithm_type="3D"):
         self.driver.find_element_by_id(id_="ui-id-2" if algorithm_type == "2D" else "ui-id-1").click()
@@ -77,5 +79,18 @@ class Driver:
 
     def commit(self, algorithm_type="3D"):
         self.valid_type(algorithm_type)
-        self.driver.find_element_by_id(id_=self.RUN_BUTTON_ID.get(algorithm_type)).click()
-        return self.driver.page_source
+        run = self.driver.find_element_by_id(id_=self.RUN_BUTTON_ID.get(algorithm_type))
+        self.wait_for_element(run)
+        run.click()
+        time.sleep(10)
+        return self.driver.find_element_by_xpath("//fieldset").get_attribute('innerHTML')
+
+    def wait_for_element(self, elem, timeout=2):
+        time.sleep(1)
+        enable = elem.is_enabled()
+        if enable:
+            return
+        elif not enable and timeout > 0:
+            self.wait_for_element(elem, timeout-1)
+        else:
+            raise TimeoutException(msg="Timeout exception when try execute!")

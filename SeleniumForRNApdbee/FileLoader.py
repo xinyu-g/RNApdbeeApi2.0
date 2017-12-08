@@ -5,9 +5,9 @@ from enum import Enum
 
 
 class SupportedFile(Enum):
-    PDB = ".pdb"
-    BPSEQ = ".bpseq"
-    CT = ".ct"
+    PDB = "pdb"
+    BPSEQ = "bpseq"
+    CT = "ct"
 
 
 class Loader:
@@ -42,7 +42,7 @@ class Loader:
         return text
 
     def valid_type(self, absolute_path, algorithm_type):
-        filename, file_extension = os.path.splitext(absolute_path)
+        file_extension = self.get_extension(absolute_path)
         if algorithm_type == "3D" and file_extension.lower() == SupportedFile.PDB.value:
             return
         elif algorithm_type == "2D" and file_extension.lower() == \
@@ -55,31 +55,26 @@ class Loader:
     def load_file(self, algorithm_type, absolute_path, timeout=2):
         self.valid_type(absolute_path, algorithm_type)
         extension = self.get_extension(absolute_path)
-        self.driver.find_element_by_xpath(self.SELECT_EXAMPLE_FILE.format(extension)).click()
         self.driver.find_element_by_id(id_=self.SHOW_FILE_CONTENT_ID.get(extension)).click()
-        self.clear_content(absolute_path, timeout)
+        self.driver.find_element_by_xpath(self.SELECT_EXAMPLE_FILE.format(extension)).click()
+        content = self.driver.find_element_by_id(id_=self.CONTENT_INPUT_ID.get(extension))
+        self.clear_content(content, timeout)
         self.set_content(absolute_path)
         self.driver.find_element_by_id(id_=self.SHOW_FILE_CONTENT_ID.get(extension)).click()
-
-    def clear_content(self, absolute_path, timeout=2):
-        extension = self.get_extension(absolute_path)
-        content = self.driver.find_element_by_id(id_=self.CONTENT_INPUT_ID.get(extension))
-        self.wait_for_file_load(content, timeout)
-        content.clear()
 
     def set_content(self, absolute_path):
         file_content = self.load_content(absolute_path)
         extension = self.get_extension(absolute_path)
         content = self.driver.find_element_by_id(id_=self.CONTENT_INPUT_ID.get(extension))
-        content.send_keys(file_content)
+        self.driver.execute_script("arguments[0].value = arguments[1];", content, file_content)
 
-    def wait_for_file_load(self, elem, timeout=2):
-        displayed = elem.is_displayed()
-        if displayed:
+    def clear_content(self, elem, timeout=2):
+        value = elem.get_attribute("value")
+        if len(value) > 0:
             return
-        elif not displayed and timeout > 0:
+        elif timeout > 0:
             time.sleep(1)
-            self.wait_for_file_load(elem, timeout-1)
+            self.clear_content(elem, timeout-1)
         else:
-            raise TimeoutException(msg="Timeout exception when loading a file")
+            raise TimeoutException(msg="Something went wrong")
 

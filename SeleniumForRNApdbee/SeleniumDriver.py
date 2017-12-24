@@ -72,7 +72,7 @@ class Driver:
     def select_analyse_helices(self):
         self.driver.find_element_by_xpath(self.SELECT_CHECKBOX).click()
         
-    def load_file(self, file_path, algorithm_type="3D", timeout=2):
+    def load_file(self, file_path, algorithm_type="3D", timeout=10):
         self.valid_type(algorithm_type)
         loader = FileLoader.Loader(self.driver)
         loader.load_file(absolute_path=file_path, algorithm_type=algorithm_type, timeout=timeout)
@@ -82,8 +82,7 @@ class Driver:
         run = self.driver.find_element_by_id(id_=self.RUN_BUTTON_ID.get(algorithm_type))
         self.wait_for_element(run)
         run.click()
-        time.sleep(10)
-        return self.driver.find_element_by_xpath("//fieldset").get_attribute('innerHTML')
+        return self.driver.page_source
 
     def wait_for_element(self, elem, timeout=2):
         time.sleep(1)

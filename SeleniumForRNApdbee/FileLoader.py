@@ -52,7 +52,7 @@ class Loader:
             raise ValueError("For {} algorithm type supported extension is {}"
                             .format(algorithm_type, self.get_supported_extension(algorithm_type)))
 
-    def load_file(self, algorithm_type, absolute_path, timeout=2):
+    def load_file(self, algorithm_type, absolute_path, timeout=10):
         self.valid_type(absolute_path, algorithm_type)
         extension = self.get_extension(absolute_path)
         self.driver.find_element_by_id(id_=self.SHOW_FILE_CONTENT_ID.get(extension)).click()
@@ -68,7 +68,7 @@ class Loader:
         content = self.driver.find_element_by_id(id_=self.CONTENT_INPUT_ID.get(extension))
         self.driver.execute_script("arguments[0].value = arguments[1];", content, file_content)
 
-    def clear_content(self, elem, timeout=2):
+    def clear_content(self, elem, timeout=10):
         value = elem.get_attribute("value")
         if len(value) > 0:
             return

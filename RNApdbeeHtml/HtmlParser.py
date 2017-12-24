@@ -1,3 +1,6 @@
+GET_PARTS = "//form[@id = 'downloadResults']"
+
+
 def parse2d(html, ct=True, bpseq=True, size=10):
     pass
 

@@ -1,6 +1,5 @@
-from PIL import Image
 import requests
-from io import BytesIO
+
 
 class Parser:
 
@@ -12,8 +11,6 @@ class Parser:
 
     def get_image(self):
         href = self.tree.xpath(self.GET_VALUE.format("Image", "/a/@href"))
-        print("http://rnapdbee.cs.put.poznan.pl/{}".format(href[0]))
-        response = requests.get("http://rnapdbee.cs.put.poznan.pl/{}".format(href[0]))
-        img = Image.open(BytesIO(response.content))
-        img.show()
+        response = requests.get("http://rnapdbee.cs.put.poznan.pl{}".format(href[0]), allow_redirects=True)
+        return response
 

@@ -1,17 +1,19 @@
 class Parser:
 
-    GET_VALUE = "./fieldset/div[@class = 'main']/div/div[@class = 'column_sm2' or @class = 'column_sm2 dotbracket']"
+    GET_VALUE = "./fieldset/div[@class = 'main']/div/div[@class = 'column_sm2 dotbracket']"
+    GET_TITLE = "./fieldset/div[@class = 'main']/div/div[@class = 'column_sm2']"
 
     def __init__(self, html):
         self.tree = html
 
     def get_structure(self):
+        titles = self.tree.xpath(self.GET_TITLE)
         elements = self.tree.xpath(self.GET_VALUE)
-        result = []
-        for elem in elements:
-            text = elem.xpath("./span/text()")
-            if any(" " in s for s in text):
-                result.append("".join(text)[1:])
-            else:
-                result.append("".join(text))
-        return "\n".join(result)
+        result = {}
+        for title in titles:
+            text = title.xpath("./span/text()").pop(0)[1:]
+            sequence = "".join(elements.pop(0).xpath("./span/text()"))
+            bracket = "".join(elements.pop(0).xpath("./span/text()"))
+            data = {'sequence': sequence, "bracket": bracket}
+            result['{}'.format(text)] = data
+        return result

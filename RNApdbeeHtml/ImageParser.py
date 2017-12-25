@@ -1,4 +1,5 @@
 import requests
+import os
 
 
 class Parser:
@@ -11,6 +12,7 @@ class Parser:
 
     def get_image(self):
         href = self.tree.xpath(self.GET_VALUE.format("Image", "/a/@href"))
+        filename, file_extension = os.path.splitext(href[0])
         response = requests.get("http://rnapdbee.cs.put.poznan.pl{}".format(href[0]), allow_redirects=True)
-        return response
+        return [response, file_extension]
 

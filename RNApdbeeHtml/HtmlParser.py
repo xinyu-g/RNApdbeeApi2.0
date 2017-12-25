@@ -18,7 +18,7 @@ def parse2d(html, dot_bracket=True, ct=True, bpseq=True, image=True, size=10):
         if ct is True:
             result['{}'.format(Parser.CT)] = Parser.get_ct(part)
         if image is True:
-            result['{}'.format(Parser.IMAGE)] = Parser
+            result['{}'.format(Parser.IMAGE)] = Parser.get_image(part)
         final_list.append(result)
     if len(final_list) == 1:
         return final_list[0]

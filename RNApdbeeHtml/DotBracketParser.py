@@ -9,11 +9,11 @@ class Parser:
     def get_structure(self):
         titles = self.tree.xpath(self.GET_TITLE)
         elements = self.tree.xpath(self.GET_VALUE)
-        result = {}
+        result = []
         for title in titles:
             text = title.xpath("./span/text()").pop(0)[1:]
             sequence = "".join(elements.pop(0).xpath("./span/text()"))
             bracket = "".join(elements.pop(0).xpath("./span/text()"))
-            data = {'sequence': sequence, "bracket": bracket}
-            result['{}'.format(text)] = data
+            data = {'description': text, 'sequence': sequence, "bracket": bracket}
+            result.append(data)
         return result

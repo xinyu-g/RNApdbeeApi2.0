@@ -6,8 +6,7 @@ from SeleniumForRNApdbee import NonCanonical
 from SeleniumForRNApdbee import FileLoader
 import time
 from selenium.common.exceptions import TimeoutException
-import os
-import logging
+from SeleniumForRNApdbee import DriverLoader
 
 
 class Driver:
@@ -18,11 +17,7 @@ class Driver:
     RUN_BUTTON_ID = {"2D": "commitBpseqCt", "3D": "commitPdb"}
 
     def __init__(self, link=LINK_TO_RNAAPDBEE):
-        logging.basicConfig(level=logging.INFO)
-        logger = logging.getLogger(__name__)
-        here = os.path.dirname(__file__)
-        phantom_js = os.path.join(here, 'driver', 'phantomjs.exe')
-        logger.info("Init phantomjs driver: {}".format(phantom_js))
+        phantom_js = DriverLoader.get_selenium_driver_path()
         self.driver = webdriver.PhantomJS(phantom_js)
         self.driver.set_window_size(1200, 800)
         self.driver.get(link)

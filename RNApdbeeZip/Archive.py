@@ -1,4 +1,3 @@
-from zipfile import *
 import os
 import csv
 from RNApdbeeHtml import Parser

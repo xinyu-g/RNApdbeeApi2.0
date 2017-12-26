@@ -73,25 +73,33 @@ class Driver:
 
     def select_analyse_helices(self):
         self.driver.find_element_by_xpath(self.SELECT_CHECKBOX).click()
+
+    def insert_pdb_id(self, pdb_id):
+        pdb_id_input = self.driver.find_element_by_id("pdbId")
+        pdb_id_input.send_keys(pdb_id)
+
+    def get_pdb_id(self):
+        get = self.driver.find_element_by_xpath("//input[@value = 'Get']")
+        get.click()
         
     def load_file(self, file_path, algorithm_type="3D", timeout=10):
         self.valid_type(algorithm_type)
         loader = FileLoader.Loader(self.driver)
         loader.load_file(absolute_path=file_path, algorithm_type=algorithm_type, timeout=timeout)
 
-    def commit(self, algorithm_type="3D"):
+    def commit(self, algorithm_type="3D", timeout=2):
         self.valid_type(algorithm_type)
         run = self.driver.find_element_by_id(id_=self.RUN_BUTTON_ID.get(algorithm_type))
-        self.wait_for_element(run)
+        self.wait_for_element(elem=run, timeout=timeout)
         run.click()
         return self.driver.page_source
 
     def wait_for_element(self, elem, timeout=2):
-        time.sleep(1)
         enable = elem.is_enabled()
         if enable:
             return
         elif not enable and timeout > 0:
+            time.sleep(1)
             self.wait_for_element(elem, timeout-1)
         else:
             raise TimeoutException(msg="Timeout exception when try execute!")

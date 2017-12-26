@@ -9,11 +9,12 @@ from SeleniumForRNApdbee import BasePair as Bas
 from SeleniumForRNApdbee import NonCanonical as Non
 
 
-def execute(file_path, base_pairs="rna_view", non_canonical="not_include", secondary_structure_algorithm="hybrid"
+def execute(file_path=None, pdb_id=None, base_pairs="rna_view", non_canonical="not_include", secondary_structure_algorithm="hybrid"
             , generate_graphical="pseudo_viewer"):
 
     """
     :param file_path: path to the PDB file
+    :param pdb_id: pdb id from Protein Data Bank
     :param base_pairs: possible values: [rna_view, mc, dna_dssr]
     :param non_canonical: possible values: [text_and_graphical, only_graphical, not_include]
     :param secondary_structure_algorithm: possible values: [hybrid, dp, min_gain, max_conflicts, fcfs]
@@ -29,7 +30,16 @@ def execute(file_path, base_pairs="rna_view", non_canonical="not_include", secon
     selenium_driver.select_identify_base_pairs(Bas.Pair(base_pairs.upper()))
     selenium_driver.select_include_non_canonical(Non.Representation(non_canonical.upper()))
     selenium_driver.select_algorithm(Sec.Algorithm(secondary_structure_algorithm.upper()))
-    selenium_driver.load_file(file_path)
-    html = selenium_driver.commit()
+
+    if(file_path is None) and (pdb_id is None):
+        raise ValueError('You have to specify pdb file path or pdb id from Protein Data Bank!')
+    elif file_path is not None:
+        selenium_driver.load_file(file_path)
+        html = selenium_driver.commit()
+    elif pdb_id is not None:
+        selenium_driver.insert_pdb_id(pdb_id)
+        selenium_driver.get_pdb_id()
+        html = selenium_driver.commit(timeout=10)
+
     selenium_driver.close()
     return html

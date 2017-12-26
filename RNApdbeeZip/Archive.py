@@ -1,3 +1,6 @@
+"""This Module creates a zip or tar archive from the RNApdbeeHtml result
+                in a directory where it was called. """
+
 import os
 import csv
 from RNApdbeeHtml import Parser
@@ -6,6 +9,10 @@ import shutil
 
 
 def to_archive(result, archive_format='zip'):
+    """
+    :param result: result from RNApdbeeHtml parse2d or parse3d
+    :param archive_format: zip or tar
+    """
     if (archive_format != 'zip') and (archive_format != 'tar'):
         raise TypeError("Unsupported type! Use: zip or tar")
 

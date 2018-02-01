@@ -1,3 +1,5 @@
+"""This module loads the selenium driver from the resource directory depending on the operating system"""
+
 import sys
 import os
 import logging

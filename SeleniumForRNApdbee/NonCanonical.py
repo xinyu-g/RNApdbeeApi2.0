@@ -1,3 +1,5 @@
+"""Enum containing values ​​for the 'include non-canonical ones' from http://rnapdbee.cs.put.poznan.pl/"""
+
 from enum import Enum
 
 NAME = "nonCanonicalHandling"

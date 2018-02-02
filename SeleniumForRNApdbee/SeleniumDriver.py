@@ -9,6 +9,7 @@ from SeleniumForRNApdbee import FileLoader
 import time
 from selenium.common.exceptions import TimeoutException
 from SeleniumForRNApdbee import DriverLoader
+import os
 
 
 class Driver:
@@ -20,7 +21,7 @@ class Driver:
 
     def __init__(self, link=LINK_TO_RNAAPDBEE):
         phantom_js = DriverLoader.get_selenium_driver_path()
-        self.driver = webdriver.PhantomJS(phantom_js)
+        self.driver = webdriver.PhantomJS(executable_path=phantom_js, service_log_path=os.path.devnull)
         self.driver.set_window_size(1200, 800)
         self.driver.get(link)
 

@@ -4,6 +4,7 @@ import os
 import time
 from selenium.common.exceptions import TimeoutException
 from enum import Enum
+from selenium.webdriver.common.by import By
 
 
 class SupportedFile(Enum):
@@ -88,12 +89,12 @@ class Loader:
         """
         self.valid_type(absolute_path, algorithm_type)
         extension = self.get_extension(absolute_path)
-        self.driver.find_element_by_id(id_=self.SHOW_FILE_CONTENT_ID.get(extension)).click()
-        self.driver.find_element_by_xpath(self.SELECT_EXAMPLE_FILE.format(extension)).click()
-        content = self.driver.find_element_by_id(id_=self.CONTENT_INPUT_ID.get(extension))
+        self.driver.find_element(By.ID, self.SHOW_FILE_CONTENT_ID.get(extension)).click()
+        self.driver.find_element(By.XPATH, self.SELECT_EXAMPLE_FILE.format(extension)).click()
+        content = self.driver.find_element(By.ID, self.CONTENT_INPUT_ID.get(extension))
         self.clear_content(content, timeout)
         self.set_content(absolute_path)
-        self.driver.find_element_by_id(id_=self.SHOW_FILE_CONTENT_ID.get(extension)).click()
+        self.driver.find_element(By.ID, self.SHOW_FILE_CONTENT_ID.get(extension)).click()
 
     def set_content(self, absolute_path):
         """
@@ -103,7 +104,7 @@ class Loader:
         """
         file_content = self.load_content(absolute_path)
         extension = self.get_extension(absolute_path)
-        content = self.driver.find_element_by_id(id_=self.CONTENT_INPUT_ID.get(extension))
+        content = self.driver.find_element(By.ID, self.CONTENT_INPUT_ID.get(extension))
         self.driver.execute_script("arguments[0].value = arguments[1];", content, file_content)
 
     def clear_content(self, elem, timeout=10):

@@ -9,14 +9,15 @@ def get_selenium_driver_path():
     logging.basicConfig(level=logging.INFO)
     logger = logging.getLogger('DriverLoader')
     here = os.path.dirname(__file__)
+    
     if sys.platform == 'win32':
-        phantom_js = os.path.join(here, 'driver', 'phantomjs_win.exe')
+        gecko_driver = os.path.join(here, 'driver', 'geckodriver_win.exe')
     elif sys.platform == 'darwin':
-        phantom_js = os.path.join(here, 'driver', 'phantomjs_mac.exe')
-    elif sys.platform == 'linux2':
-        phantom_js = os.path.join(here, 'driver', 'phantomjs_linux.exe')
+        gecko_driver = os.path.join(here, 'driver', 'geckodriver_mac')
+    elif sys.platform.startswith('linux'):
+        gecko_driver = os.path.join(here, 'driver', 'geckodriver_linux')
     else:
-        raise Exception("Do not supported operating system.")
+        raise Exception("Unsupported operating system.")
 
-    logger.info("Init phantomjs driver: {} for {}".format(phantom_js, sys.platform))
-    return phantom_js
+    logger.info("Init GeckoDriver: {} for {}".format(gecko_driver, sys.platform))
+    return gecko_driver

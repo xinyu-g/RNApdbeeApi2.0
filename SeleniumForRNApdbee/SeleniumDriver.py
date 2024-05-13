@@ -10,7 +10,11 @@ import time
 from selenium.common.exceptions import TimeoutException
 from SeleniumForRNApdbee import DriverLoader
 import os
-
+from webdriver_manager.chrome import ChromeDriverManager 
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 class Driver:
 
@@ -20,13 +24,27 @@ class Driver:
     RUN_BUTTON_ID = {"2D": "commitBpseqCt", "3D": "commitPdb"}
 
     def __init__(self, link=LINK_TO_RNAAPDBEE):
-        phantom_js = DriverLoader.get_selenium_driver_path()
-        self.driver = webdriver.PhantomJS(executable_path=phantom_js, service_log_path=os.path.devnull)
+        # options = webdriver.FirefoxOptions()
+
+        # options.add_argument("-headless")
+
+        # self.driver = webdriver.Firefox(options=options)
+
+        options = webdriver.ChromeOptions()
+
+        options.add_argument("-headless")
+
+        self.driver = webdriver.Chrome(options=options)
+
         self.driver.set_window_size(1200, 800)
         self.driver.get(link)
 
     def close(self):
+        # self.driver.close()
+        # print('quit')
         self.driver.close()
+        self.driver.quit()
+        time.sleep(1)
 
     @staticmethod
     def valid_type(algorithm_type):
@@ -51,7 +69,8 @@ class Driver:
         :param name: specific name for html input tag
         :param algorithm: '3D' or '2D'
         """
-        self.driver.find_element_by_xpath(self.SELECT_RADIO.format(table, name, algorithm.name)).click()
+        # self.driver.find_element_by_xpath(self.SELECT_RADIO.format(table, name, algorithm.name)).click()
+        self.driver.find_element(By.XPATH, self.SELECT_RADIO.format(table, name, algorithm.name)).click()
 
     def select_algorithm_type(self, algorithm_type="3D"):
         """
@@ -59,7 +78,8 @@ class Driver:
 
         :param algorithm_type: '3D' or '2D'
         """
-        self.driver.find_element_by_id(id_="ui-id-2" if algorithm_type == "2D" else "ui-id-1").click()
+        # self.driver.find_element_by_id(id_="ui-id-2" if algorithm_type == "2D" else "ui-id-1").click()
+        self.driver.find_element(By.ID, "ui-id-2" if algorithm_type == "2D" else "ui-id-1").click()
 
     def select_algorithm(self, algorithm, algorithm_type="3D"):
         """
@@ -135,7 +155,7 @@ class Driver:
 
         :param pdb_id: pdb id from https://www.rcsb.org/
         """
-        pdb_id_input = self.driver.find_element_by_id("pdbId")
+        pdb_id_input = self.driver.find_element(By.ID, "pdbId")
         pdb_id_input.send_keys(pdb_id)
 
     def get_pdb_id(self):
@@ -143,7 +163,7 @@ class Driver:
         searches button for fields pd id and presses
 
         """
-        get = self.driver.find_element_by_xpath("//input[@value = 'Get']")
+        get = self.driver.find_element(By.XPATH ,"//input[@value = 'Get']")
         get.click()
         
     def load_file(self, file_path, algorithm_type="3D", timeout=10):
@@ -167,7 +187,12 @@ class Driver:
         :return: the result of the algorithm in html format
         """
         self.valid_type(algorithm_type)
-        run = self.driver.find_element_by_id(id_=self.RUN_BUTTON_ID.get(algorithm_type))
+        # run_button_id = self.RUN_BUTTON_ID.get(algorithm_type)
+        # run = WebDriverWait(self.driver, timeout).until(
+        #     EC.element_to_be_clickable((By.ID, run_button_id))
+        # )
+        # print(self.RUN_BUTTON_ID.get(algorithm_type))
+        run = self.driver.find_element(By.ID, self.RUN_BUTTON_ID.get(algorithm_type))
         self.wait_for_element(elem=run, timeout=timeout)
         run.click()
         return self.driver.page_source
